@@ -4,12 +4,17 @@ import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
-def plot_hurricane(observed_data: pd.DataFrame, predicted_data: pd.DataFrame, hurricane_name: str = ""):
+def plot_hurricane(observed_data: pd.DataFrame, predicted_data: pd.DataFrame):
 
-    lon_lower = observed_data["LON"].min()
-    lon_upper = observed_data["LON"].max()
-    lat_lower = observed_data["LAT"].min()
-    lat_upper = observed_data["LAT"].max()
+    lon_lower = min([observed_data["LON"].min(), predicted_data["LON"].min()])
+    lon_upper = max([observed_data["LON"].max(), predicted_data["LON"].max()])
+    lat_lower = min([observed_data["LAT"].min(), predicted_data["LAT"].min()])
+    lat_upper = max([observed_data["LAT"].max(), predicted_data["LAT"].max()])
+
+    if observed_data.iloc[0]["NAME"] != "UNNAMED":
+        hurricane_name = observed_data.iloc[0]["NAME"].capitalize()
+    else:
+        hurricane_name = observed_data.iloc[0]["SID"]
 
     fig = plt.figure(figsize = (12,8))
     ax = plt.axes(projection = ccrs.PlateCarree())
